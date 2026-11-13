@@ -128,7 +128,7 @@ section { padding-top: 88px; }
 @keyframes flick { from { transform: scale(1, 1) rotate(-3deg); } to { transform: scale(0.9, 1.12) rotate(3deg); } }
 
 /* Video */
-.vframe { position: relative; width: 100%; max-width: 720px; aspect-ratio: 16 / 9; background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; box-shadow: 8px 10px 0 var(--ink); overflow: hidden; display: grid; }
+.vframe { position: relative; width: min(100%, var(--vw, 720px)); aspect-ratio: var(--ar, 16 / 9); background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; box-shadow: 8px 10px 0 var(--ink); overflow: hidden; display: grid; }
 .vframe video { width: 100%; height: 100%; object-fit: contain; background: #000; display: block; }
 .vph { position: relative; display: grid; gap: 10px; place-items: center; align-content: center; text-align: center; padding: 20px; cursor: pointer; width: 100%; height: 100%; background: color-mix(in srgb, var(--sky) 45%, var(--surface)); color: var(--ink); font-weight: 700; }
 .vph small { font-weight: 500; color: var(--muted); }
@@ -210,6 +210,12 @@ details.env[open] { box-shadow: 5px 6px 0 var(--ink); }
   .girl .bob, .song .disc.on { animation: none; }
   .runner { transition: none; }
 }
+
+/* Closing promise */
+.forever { max-width: 680px; background: var(--surface); border: 2px solid var(--ink); border-radius: 18px; padding: clamp(22px, 5vw, 40px); box-shadow: 8px 10px 0 var(--ink); display: grid; gap: 14px; transform: rotate(0.5deg); }
+.forever h2 { font-size: clamp(1.9rem, 6vw, 3rem); color: var(--accent); }
+.forever p { max-width: 54ch; }
+.forever .sign { font-family: var(--hand); font-size: 1.9rem; line-height: 1.2; }
 
 footer { margin-top: 72px; padding-top: 20px; border-top: 2px dashed var(--line); color: var(--muted); font-size: 0.95rem; }
 #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
@@ -374,6 +380,10 @@ footer { margin-top: 72px; padding-top: 20px; border-top: 2px dashed var(--line)
     </div>
   </section>
 
+  <section id="foreverSec">
+    <article class="forever" id="forever"></article>
+  </section>
+
   <section id="cakeSec">
     <div class="sec-head">
       <p class="eyebrow">Last thing</p>
@@ -423,10 +433,10 @@ const CONFIG = {
     { title: "Falling deeper", text: "I'm not sure how or when, but with time I love you more." }
   ],
   timeline: [
-    { date: "Where it began", title: "The day we started talking", text: "I felt something different between us. You said you had a soft corner for me in your heart, and with that line I proposed to you. I fell in love, and with all the ups and downs, here we are after 5+ years.", caption: "day one" },
-    { date: "Our first date", title: "The college bunk", text: "For the first time you travelled to me, and I bunked my college, just you and me. I was scared because people were staring at me, it was my first time. But I enjoyed it. It was my first time alone with you.", caption: "first time alone" },
-    { date: "Our latest trip", title: "Beside you", text: "This trip has a special place in my heart. I kept looking at your face, and at your face in my hands, and thinking how can I stay away from this kid. You are really my jaan. I want to be able to fly to you whenever I miss you, and give you a hug.", caption: "my jaan" },
-    { date: "Today", title: "Still falling", text: "Not sure how and when, but with time I am falling deeper in love with you. I enjoy every single moment with you.", caption: "us, now" }
+    { date: "Where it began", title: "The day we started talking", text: "I felt something different between us. You said you had a soft corner for me in your heart, and with that line I proposed to you. I fell in love, and with all the ups and downs, here we are after 5+ years.", caption: "day one", photo: "story-ring.jpg", pos: "50% 30%" },
+    { date: "Our first date", title: "The college bunk", text: "For the first time you travelled to me, and I bunked my college, just you and me. I was scared because people were staring at me, it was my first time. But I enjoyed it. It was my first time alone with you.", caption: "first time alone", photo: "story-winter.jpg", pos: "50% 35%" },
+    { date: "Our latest trip", title: "Beside you", text: "This trip has a special place in my heart. I kept looking at your face, and at your face in my hands, and thinking how can I stay away from this kid. You are really my jaan. I want to be able to fly to you whenever I miss you, and give you a hug.", caption: "my jaan", photo: "story-shoulder.jpg", pos: "50% 35%" },
+    { date: "Today", title: "Still falling", text: "Not sure how and when, but with time I am falling deeper in love with you. I enjoy every single moment with you.", caption: "us, now", photo: "story-keys.jpg", pos: "50% 46%" }
   ],
   vouchers: [
     { title: "One movie night", text: "You pick the film. I will not complain." },
@@ -439,9 +449,12 @@ const CONFIG = {
   /* Video: send Claude your video file (under 15 MB) and it will be added here.
      Until then, the frame lets you pick a video to preview on your own screen. */
   video: {
-    src: "",
+    src: "honey-video.mp4",
+    poster: "honey-video-poster.jpg",
+    width: 480,                                      // video size in pixels, so the frame matches it
+    height: 854,
     title: "A message from me",
-    note: "I couldn't fit everything into words, so here it is in person."
+    note: "I couldn't fit everything into words, so here it is in person. How much you care for me and how much you love me, baby. I see everything, bubu. You are my world, duggu."
   },
   openWhen: [
     { title: "Open when you miss me", text: "I know you miss me less but I am with you, my baby. Ek jhappi aapke liye, big vala huggie 🫂🤗 I wish I could fly to you and give you a hug right now. Until then, this is me hugging you 🫂🤗" },
@@ -461,13 +474,18 @@ const CONFIG = {
      Until then, you can pick a file from your phone to try it on your own screen. */
   song: { src: "", title: "Tu Mera Ho Gaya", subtitle: "Itna hi kaafi hai" },
   secretMessage: "I am all yours and you are mine.",
+  closing: {
+    title: "Let's spend our life together.",
+    text: "I want to travel the world with you and cherish my life with you. There is so much more in life left to see, and we will see all of it together.",
+    sign: "Cheers to the coming years together. Just us 🌍🫂"
+  },
   love: {
     caption: "Me, waiting for your answer",
     question: "Do you love me?",
     whyOnlyYes: ["Why only yes and not definitely yes?", "Hmm, still only yes? Try the other one.", "Come on, say it properly."],
     caught: "I knew it. I love you too, jaan.",
     afterCaught: "You said definitely. Best answer ever.",
-    dodgesBeforeCaught: 10                            // how many times "Definitely yes" runs away before he can catch it
+    dodgesBeforeCaught: 7                            // how many times "Definitely yes" runs away before he can catch it
   },
   wishText: "Wish granted. Happy birthday, Honey.",
   footer: "Made with love by Deepika, for Honey."
@@ -549,6 +567,7 @@ const CONFIG = {
       const img = el("img");
       img.src = m.photo;
       img.alt = m.caption || m.title;
+      if (m.pos) img.style.objectPosition = m.pos;
       photo.append(img);
     }
     const input = el("input");
@@ -630,17 +649,25 @@ const CONFIG = {
   const vf = $("videoFrame");
   $("videoTitle").textContent = C.video.title;
   $("videoNote").textContent = C.video.note;
-  function mountVideo(src) {
+  function fit(w, h) {
+    if (!w || !h) return;
+    vf.style.setProperty("--ar", w + " / " + h);
+    vf.style.setProperty("--vw", Math.min(720, Math.round(640 * w / h)) + "px");
+  }
+  function mountVideo(src, poster) {
     vf.textContent = "";
     const v = document.createElement("video");
     v.controls = true;
     v.playsInline = true;
     v.preload = "metadata";
+    if (poster) v.poster = poster;
     v.src = src;
+    v.addEventListener("loadedmetadata", () => fit(v.videoWidth, v.videoHeight));
     vf.append(v);
   }
   if (C.video.src) {
-    mountVideo(C.video.src);
+    fit(C.video.width, C.video.height);
+    mountVideo(C.video.src, C.video.poster);
   } else {
     const ph = el("label", "vph");
     ph.append(el("span", "play"), el("span", null, "Your video goes here"), el("small", null, "Tap to preview one from your phone"));
@@ -831,6 +858,9 @@ const CONFIG = {
       yesClicks++;
     });
   })();
+
+  /* Closing promise */
+  $("forever").append(el("h2", null, C.closing.title), el("p", null, C.closing.text), el("p", "sign", C.closing.sign));
 
   $("footer").textContent = C.footer;
 
